@@ -91,9 +91,9 @@ install(DIRECTORY
   "resources/instruments"
   "resources/songs"
   "resources/themes"
-  DESTINATION ${CMAKE_INSTALL_BINDIR})
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/FMComposer)
 install(FILES
   "resources/defaultkeyboards.ini"
   "resources/gmlist.ini"
   "resources/readme.txt"
-  DESTINATION ${CMAKE_INSTALL_BINDIR})
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/FMComposer)

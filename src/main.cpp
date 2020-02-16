@@ -36,7 +36,8 @@ int main(int argc, char *argv[])
 {
 
 	appdir = dirnameOf(string(argv[0]));
-
+	apprscdir = appdir + pathSeparator + ".." + pathSeparator +
+		"share" + pathSeparator + "FMComposer" + pathSeparator;
 
 	global_initialize();
 

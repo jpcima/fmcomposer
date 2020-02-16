@@ -12,7 +12,6 @@
 #include "../../gui/popup/popup.hpp"
 #include "../../state.hpp"
 
-extern char appDir[256];
 extern List *instrList;
 extern int prevNote;
 

@@ -34,7 +34,7 @@ string lastSongOpened;
 int isSongModified = 0;
 float frameTime60;
 static string note2name[129];
-string appdir, appconfigdir, instrDir, songDir;
+string appdir, apprscdir, appconfigdir, instrDir, songDir;
 
 PaStream *stream;
 PaStreamParameters out;

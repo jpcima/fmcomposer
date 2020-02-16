@@ -142,7 +142,7 @@ int addInstrument(int id, unsigned char type)
 				instrumentName = midiPercussionNames[id - 23];
 			}
 		}
-		if (fm_loadInstrument(fm, string(string(appdir + "/instruments/") + instrumentFile + string(".fmci")).c_str(), fm->instrumentCount) < 0)
+		if (fm_loadInstrument(fm, string(string(apprscdir + "/instruments/") + instrumentFile + string(".fmci")).c_str(), fm->instrumentCount) < 0)
 		{
 			fm_resizeInstrumentList(fm, fm->instrumentCount+1);
 		}

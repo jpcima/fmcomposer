@@ -56,7 +56,7 @@ extern int isSongModified;
 extern string lastSongOpened;
 extern string songLoadedRequest;
 extern float frameTime60;
-extern string appdir, appconfigdir, instrDir, songDir;
+extern string appdir, apprscdir, appconfigdir, instrDir, songDir;
 extern string intervals[25];
 extern RenderWindow *window;
 extern fmsynth *fm;

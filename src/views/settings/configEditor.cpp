@@ -57,7 +57,7 @@ wasapiExclusive(420, 325, lang("config","Exclusive mode")),
 languageList(800, 500, 10, 360)
 {
 
-	if (ini_langs.LoadFile(string(appdir+"lang/langs.ini").c_str()) < 0)
+	if (ini_langs.LoadFile(string(apprscdir+"lang/langs.ini").c_str()) < 0)
 	{
 		error(lang("general", "Lang_error"));
 	}
@@ -528,15 +528,15 @@ void iniparams_load()
 		error("Can't load " + appconfigdir + "config.ini");
 	}
 
-	if (ini_theme.LoadFile(string(appdir + "themes" + pathSeparator + ini_config.GetValue("config", "theme", "dark.ini")).c_str()) < 0)
+	if (ini_theme.LoadFile(string(apprscdir + "themes" + pathSeparator + ini_config.GetValue("config", "theme", "dark.ini")).c_str()) < 0)
 	{
-		error("Can't load theme file (" + appdir + "themes" + pathSeparator + string(ini_config.GetValue("config", "theme", "dark.ini")) + ")");
+		error("Can't load theme file (" + apprscdir + "themes" + pathSeparator + string(ini_config.GetValue("config", "theme", "dark.ini")) + ")");
 	}
-	if (ini_gmlist.LoadFile(string(appdir + "gmlist.ini").c_str()) < 0)
+	if (ini_gmlist.LoadFile(string(apprscdir + "gmlist.ini").c_str()) < 0)
 	{
 		error("Can't load gmlist.ini");
 	}
-	if (ini_keyboards.LoadFile(string(appdir + "defaultkeyboards.ini").c_str()) < 0)
+	if (ini_keyboards.LoadFile(string(apprscdir + "defaultkeyboards.ini").c_str()) < 0)
 	{
 		error("Can't load defaultkeyboards.ini");
 	}
@@ -544,7 +544,7 @@ void iniparams_load()
 
 	loadColors(&ini_theme);
 
-	lang_load(ini_config.GetValue("config", "lang", string(appdir+"lang/english.ini").c_str()));
+	lang_load(ini_config.GetValue("config", "lang", string(apprscdir+"lang/english.ini").c_str()));
 }
 
 void ConfigEditor::handleEvents()

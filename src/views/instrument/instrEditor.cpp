@@ -37,10 +37,10 @@ temperament(806 + 6, y + 657 + 6, lang("instrEditor", "Temperament"), -1, 6), k_
 	lfoOffsetBar.setFillColor(colors[WAVEFORMOFFSETBAR]);
 
 	/* Try to load default piano sound*/
-	if (fm_loadInstrument(fm, string(appdir + "/instruments/" + config->defaultPreloadedSound + ".fmci").c_str(), 0) < 0)
+	if (fm_loadInstrument(fm, string(apprscdir + "/instruments/" + config->defaultPreloadedSound + ".fmci").c_str(), 0) < 0)
 	{
 		/* Fallback to the default melodic*/
-		if (fm_loadInstrument(fm, string(string(appdir + "/instruments/") + ini_gmlist.GetValue("melodic", "default", "0") + string(".fmci")).c_str(), 0) < 0)
+		if (fm_loadInstrument(fm, string(string(apprscdir + "/instruments/") + ini_gmlist.GetValue("melodic", "default", "0") + string(".fmci")).c_str(), 0) < 0)
 		{
 
 			fm_resizeInstrumentList(fm, 1);

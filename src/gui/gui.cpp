@@ -100,15 +100,15 @@ void gui_initialize()
 	window->setVerticalSyncEnabled(true);
 
 	/* Load font */
-	if (!font.loadFromFile(string(appdir + "themes" + pathSeparator + "roboto.ttf").c_str()))
+	if (!font.loadFromFile(string(apprscdir + "themes" + pathSeparator + "roboto.ttf").c_str()))
 	{
 		error("Can't load font file");
 	}
-	if (!font_condensed.loadFromFile(string(appdir + "themes" + pathSeparator + "roboto_condensed.ttf").c_str()))
+	if (!font_condensed.loadFromFile(string(apprscdir + "themes" + pathSeparator + "roboto_condensed.ttf").c_str()))
 	{
 		error("Can't load font file");
 	}
-	if (!font_symbols.loadFromFile(string(appdir + "themes" + pathSeparator + "materialicons.ttf").c_str()))
+	if (!font_symbols.loadFromFile(string(apprscdir + "themes" + pathSeparator + "materialicons.ttf").c_str()))
 	{
 		error("Can't load font file");
 	}
@@ -118,7 +118,7 @@ void gui_initialize()
 	extern CSimpleIniA ini_theme;
 	Image _tileset;
 
-	if (!_tileset.loadFromFile(string(appdir + "themes" + pathSeparator + ini_theme.GetValue("theme", "iconset", "ui.png")).c_str()))
+	if (!_tileset.loadFromFile(string(apprscdir + "themes" + pathSeparator + ini_theme.GetValue("theme", "iconset", "ui.png")).c_str()))
 	{
 		error("Can't load GUI icons");
 	}
