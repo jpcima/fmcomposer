@@ -1,0 +1,17 @@
+language: c++
+
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      before_install:
+        - sudo apt-get update -qq
+      install:
+        - sudo apt-get install build-essential cmake libsfml-dev libflac-dev libmp3lame-dev portaudio19-dev mesa-common-dev
+      script:
+        - mkdir build
+        - cd build
+        - cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+        - cd ..
+        - make -C build -j2 -k
+        - sudo make -C build install
