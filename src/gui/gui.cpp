@@ -5,8 +5,9 @@
 #define clamp(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 
 
-
+#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
 sf::Cursor cursors[5];
+#endif
 
 
 extern Image icon;
@@ -65,23 +66,26 @@ void showInstrumentLights()
 
 void updateMouseCursor()
 {
+#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
 	static int oldMouseCursor = -1;
 	if (mouse.cursor != oldMouseCursor)
 	{
 		oldMouseCursor = mouse.cursor;
 		window->setMouseCursor(cursors[mouse.cursor]);
 	}
-
+#endif
 }
 
 void gui_initialize()
 {
 
+#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 5)
 	cursors[0].loadFromSystem(sf::Cursor::Arrow);
 	cursors[1].loadFromSystem(sf::Cursor::Hand);
 	cursors[2].loadFromSystem(sf::Cursor::Text);
 	cursors[3].loadFromSystem(sf::Cursor::SizeAll);
 	cursors[4].loadFromSystem(sf::Cursor::SizeHorizontal);
+#endif
 
 	sf::ContextSettings s;
 
