@@ -11,6 +11,7 @@ typedef sf::Clipboard Clipboard;
 #include <clip.h>
 
 class Clipboard {
+public:
     static sf::String getString()
     {
         std::string temp;
