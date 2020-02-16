@@ -1,5 +1,7 @@
 ![FM Composer logo](http://fmcomposer.org/img/icon256.png)
 
+[![Build Status](https://travis-ci.com/jpcima/fmcomposer.svg?branch=master)](https://travis-ci.com/jpcima/fmcomposer)
+
 http://fmcomposer.org
 
 FM Composer is a music and sound creation tool, featuring a custom FM synthesizer engine and a tracker-like interface.
