@@ -81,3 +81,19 @@ endif()
 if(CMAKE_COMPILER_IS_GNUCC)
 	target_link_libraries(${EXECUTABLE_NAME} pthread)
 endif(CMAKE_COMPILER_IS_GNUCC)
+
+# Install
+include(GNUInstallDirs)
+install(TARGETS
+  ${EXECUTABLE_NAME}
+  DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(DIRECTORY
+  "resources/instruments"
+  "resources/songs"
+  "resources/themes"
+  DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(FILES
+  "resources/defaultkeyboards.ini"
+  "resources/gmlist.ini"
+  "resources/readme.txt"
+  DESTINATION ${CMAKE_INSTALL_BINDIR})
