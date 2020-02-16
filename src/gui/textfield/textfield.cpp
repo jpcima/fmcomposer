@@ -1,5 +1,6 @@
 #include "textfield.hpp"
 #include "../contextmenu/contextmenu.hpp"
+#include "compat/Clipboard.hpp"
 #include <math.h>
 extern void *focusedElement;
 
@@ -443,11 +444,11 @@ bool TextInput::modified()
 		{
 			if (keyboard.c)
 			{
-				sf::Clipboard::setString(text.getString().toAnsiString().substr(getSelectionStart(), selectionCount));
+				Clipboard::setString(text.getString().toAnsiString().substr(getSelectionStart(), selectionCount));
 			}
 			else if (keyboard.x)
 			{
-				sf::Clipboard::setString(text.getString().toAnsiString().substr(getSelectionStart(), selectionCount));
+				Clipboard::setString(text.getString().toAnsiString().substr(getSelectionStart(), selectionCount));
 				cutSelection();
 				selectionBegin -= abs(selectionCount);
 				recalcCursorPos();
@@ -457,7 +458,7 @@ bool TextInput::modified()
 			{
 				cutSelection();
 				string current = text.getString().toAnsiString();
-				string toInsert = sf::Clipboard::getString().toAnsiString();
+				string toInsert = Clipboard::getString().toAnsiString();
 				if (current.length() + toInsert.length() > vmax)
 				{
 

@@ -35,6 +35,10 @@ add_executable(${EXECUTABLE_NAME} ${SOURCES})
 # Add CMake modules
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
+# Add the portable clipboard library
+add_subdirectory(thirdparty/clip EXCLUDE_FROM_ALL)
+target_link_libraries(${EXECUTABLE_NAME} clip)
+
 # Detect and add SFML
 find_package(SFML 2 REQUIRED graphics window system)
 if(SFML_FOUND)

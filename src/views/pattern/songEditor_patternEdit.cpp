@@ -1,4 +1,5 @@
 #include "songEditor.hpp"
+#include "compat/Clipboard.hpp"
 
 void SongEditor::patCopy(patternSelection* copiedData)
 {
@@ -48,7 +49,7 @@ void SongEditor::patCopy(patternSelection* copiedData)
 		}
 	}
 
-	sf::Clipboard::setString(clipboard);*/
+	Clipboard::setString(clipboard);*/
 }
 
 void SongEditor::multipleEdit(int action, patternSelection* copiedData, int param, int param2, bool saveHistory)

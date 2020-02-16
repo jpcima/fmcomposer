@@ -1,5 +1,5 @@
 #include "songEditor.hpp"
-
+#include "compat/Clipboard.hpp"
 
 
 void SongEditor::handleShortcuts()
@@ -312,9 +312,9 @@ void SongEditor::handleShortcuts()
 
 
 			case Keyboard::V:// coller
-				//string clipboard=sf::Clipboard::getString();
+				//string clipboard=Clipboard::getString();
 
-			/*	if (sf::Clipboard::getString() != "")
+			/*	if (Clipboard::getString() != "")
 				{
 					vector<string> splitted = split(clipboard,",");
 					if (splitted.size() > 2)

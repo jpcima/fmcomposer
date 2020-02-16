@@ -1,4 +1,5 @@
 #include "songEditor.hpp"
+#include "compat/Clipboard.hpp"
 
 void SongEditor::pattern_copy()
 {
@@ -24,7 +25,7 @@ void SongEditor::pattern_copy()
 			clipboard += to_string(fm->pattern[fm->order][i][j].fxdata)+",";
 		}
 	}
-	sf::Clipboard::setString(clipboard);
+	Clipboard::setString(clipboard);
 
 }
 
@@ -34,9 +35,9 @@ void SongEditor::pattern_paste(int insertAfter)
 	int clipboardWidth=-1;
 	int clipboardHeight=-1;
 	bool useClipboard=false;
-	string clipboard=sf::Clipboard::getString();
+	string clipboard=Clipboard::getString();
 	vector<string> splitted;
-	if (sf::Clipboard::getString() != "")
+	if (Clipboard::getString() != "")
 	{
 		splitted = split(clipboard,",");
 		if (splitted.size() > 2)
