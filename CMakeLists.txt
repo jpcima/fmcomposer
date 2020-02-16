@@ -38,6 +38,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 # Add the portable clipboard library
 add_subdirectory(thirdparty/clip EXCLUDE_FROM_ALL)
 target_link_libraries(${EXECUTABLE_NAME} clip)
+target_include_directories(${EXECUTABLE_NAME} "thirdparty/clip") # :-(
 
 # Detect and add SFML
 find_package(SFML 2 REQUIRED graphics window system)
