@@ -298,7 +298,7 @@ void setWindowTitle(string title)
 
 void error(const std::string &text)
 {
-	fprintf(stderr, "%s", text.c_str());
+	fprintf(stderr, "%s\n", text.c_str());
 	/* std::ofstream log_file(
 		 "error.log", std::ios_base::out | std::ios_base::app );
 		 log_file << text << "\n";*/
