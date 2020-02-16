@@ -1,3 +1,6 @@
 [submodule "thirdparty/clip"]
 	path = thirdparty/clip
 	url = https://github.com/dacap/clip.git
+[submodule "thirdparty/whereami"]
+	path = thirdparty/whereami
+	url = https://github.com/gpakosz/whereami.git

@@ -20,6 +20,8 @@
 #include "views/pattern/songFileActions.hpp"
 #include "gui/sidebar.hpp"
 
+#include "whereami.h"
+
 
 Uint32 textEntered[32];
 
@@ -35,7 +37,12 @@ int windowFocus = 1;
 int main(int argc, char *argv[])
 {
 
-	appdir = dirnameOf(string(argv[0]));
+	std::string exePath;
+	unsigned exePathLength = wai_getExecutablePath(nullptr, 0, nullptr);
+	exePath.resize(exePathLength);
+	wai_getExecutablePath(&exePath[0], exePathLength, nullptr);
+
+	appdir = dirnameOf(exePath);
 	apprscdir = appdir + pathSeparator + ".." + pathSeparator +
 		"share" + pathSeparator + "FMComposer" + pathSeparator;
 
