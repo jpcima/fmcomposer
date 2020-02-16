@@ -23,7 +23,7 @@ public:
     static void setString(const sf::String& text)
     {
         std::basic_string<sf::Uint8> utf8 = text.toUtf8();
-        clip::set_text(reinterpret_cast<const char *>(utf8.data()));
+        clip::set_text(reinterpret_cast<const char *>(utf8.c_str()));
     }
 };
 
