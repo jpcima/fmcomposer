@@ -18,6 +18,7 @@
 #endif
 
 #include <stdexcept>
+#include <cmath>
 
 extern CSimpleIniA ini_gmlist;
 extern Menu *menu;
