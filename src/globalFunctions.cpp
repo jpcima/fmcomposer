@@ -17,6 +17,7 @@
 #include <sys/stat.h>
 #endif
 
+#include <stdexcept>
 
 extern CSimpleIniA ini_gmlist;
 extern Menu *menu;
@@ -378,9 +379,18 @@ void global_initialize()
 		error(lang("globalFunctions", "Directory_error"));
 	}
 
-#else 
-	appconfigdir = "~/.local/share"+pathSeparator+"fmcomposer"+pathSeparator;
-	mkdir(appconfigdir.c_str(),0733);
+#else
+	const char *homeValue = getenv("HOME");
+	if (!homeValue)
+		throw std::runtime_error("Unix home directory not set.");
+
+	appconfigdir = homeValue;
+	appconfigdir += "/.local/";
+	mkdir(appconfigdir.c_str(),0755);
+	appconfigdir += "share/";
+	mkdir(appconfigdir.c_str(),0755);
+	appconfigdir += "fmcomposer/";
+	mkdir(appconfigdir.c_str(),0755);
 #endif
 
 
