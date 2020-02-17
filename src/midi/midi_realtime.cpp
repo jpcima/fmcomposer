@@ -13,80 +13,85 @@ vector<int> midiDeviceIds;
 vector<string> midiDeviceNames;
 int midiReady, midiReceive, midiPedal;
 
+static void midi_handleEvent(const unsigned char midiMsg[3])
+{
+	switch (midiMsg[0] / 16)
+	{
+	case 8: // note off
+		if (!midiPedal) {
+			if (midiMsg[1] % 16 < instrList->text.size())
+				previewNoteStop(midiMsg[1], 1,midiMsg[0]%16);
+		}
+		break;
+	case 9: // note on
+		if (midiMsg[1] % 16 < instrList->text.size())
+			previewNote(midiMsg[0]%16, midiMsg[1], midiMsg[2] / 1.282828, 1);
+		break;
+	case 0xB: // cc
+		switch (midiMsg[1])
+		{
+		case 07:{ // channel vol
+			int midich=midiMsg[0]%16;
+			for (int i = 0; i < noteActive[midich].size(); i++)
+			{
+				fm_setChannelVolume(fm, noteActive[midich][i].fmChannel, midiMsg[1]/ 1.282828);
+			}
+			break;
+		}
+		case 0x08: // channel balance
+		case 0x0A: // (10) channel panning
+		{
+			int midich=midiMsg[0]%16;
+			for (int i = 0; i < noteActive[midich].size(); i++)
+			{
+				fm_setChannelPanning(fm, noteActive[midich][i].fmChannel, midiMsg[1]*2);
+			}
+		}
+		break;
+		case 64: // sustain pedal
+			midiPedal = (midiMsg[2] > 63);
+			if (!midiPedal)
+			{
+				previewNoteStopAll(midiMsg[0]%16);
+			}
+			break;
+		case 0x78: // (120) all sound off
+			fm_stopSound(fm);
+			break;
+		case 0x7B: // all notes off
+			for (unsigned i = 0; i < FM_ch; i++)
+			{
+				fm_stopNote(fm, i);
+			}
+			break;
+		}
+		break;
+	case 0xC: // Program Change
+		instrList->select(midiMsg[1]);
+
+		break;
+	case 14: // Pitch Bend
+		if (midiMsg[1] % 16 < instrList->text.size())
+			previewNoteBend(fm, 2 * midiMsg[2] + (midiMsg[1] > 63), midiMsg[0]%16);
+		break;
+
+	}
+}
+
 void midi_getEvents()
 {
-
 	if (midiReady && Pm_Poll(midiStream))
 	{
-
 		int count = Pm_Read(midiStream, midiBuffer, 512);
 		if (midiReceive)
 		{
 			for (int i = 0; i < count; i++)
 			{
-				switch (Pm_MessageStatus(midiBuffer[i].message) / 16)
-				{
-					case 8: // note off
-						if (!midiPedal) {
-							if (Pm_MessageData1(midiBuffer[i].message) % 16 < instrList->text.size())
-								previewNoteStop(Pm_MessageData1(midiBuffer[i].message), 1,Pm_MessageStatus(midiBuffer[i].message)%16);
-						}
-						break;
-					case 9: // note on
-						if (Pm_MessageData1(midiBuffer[i].message) % 16 < instrList->text.size())
-							previewNote(Pm_MessageStatus(midiBuffer[i].message)%16, Pm_MessageData1(midiBuffer[i].message), Pm_MessageData2(midiBuffer[i].message) / 1.282828, 1);
-						
-						break;
-					case 0xB: // cc
-						switch (Pm_MessageData1(midiBuffer[i].message))
-						{
-							case 07:{ // channel vol
-								int midich=Pm_MessageStatus(midiBuffer[i].message)%16;
-								for (int i = 0; i < noteActive[midich].size(); i++)
-								{
-									fm_setChannelVolume(fm, noteActive[midich][i].fmChannel, Pm_MessageData1(midiBuffer[i].message)/ 1.282828);
-								}
-								break;
-							}
-							case 0x08: // channel balance
-							case 0x0A: // (10) channel panning
-								{
-									int midich=Pm_MessageStatus(midiBuffer[i].message)%16;
-									for (int i = 0; i < noteActive[midich].size(); i++)
-									{
-										fm_setChannelPanning(fm, noteActive[midich][i].fmChannel, Pm_MessageData1(midiBuffer[i].message)*2);
-									}
-								}
-							break;
-							case 64: // sustain pedal
-								midiPedal = (Pm_MessageData2(midiBuffer[i].message) > 63);
-								if (!midiPedal)
-								{
-									previewNoteStopAll(Pm_MessageStatus(midiBuffer[i].message)%16);
-								}
-								break;
-							case 0x78: // (120) all sound off
-								fm_stopSound(fm);
-								break;
-							case 0x7B: // all notes off
-								for (unsigned i = 0; i < FM_ch; i++)
-								{
-									fm_stopNote(fm, i);
-								}
-								break;
-						}
-						break;
-					case 0xC: // Program Change
-						instrList->select(Pm_MessageData1(midiBuffer[i].message));
-
-						break;
-					case 14: // Pitch Bend
-						if (Pm_MessageData1(midiBuffer[i].message) % 16 < instrList->text.size())
-							previewNoteBend(fm, 2 * Pm_MessageData2(midiBuffer[i].message) + (Pm_MessageData1(midiBuffer[i].message) > 63), Pm_MessageStatus(midiBuffer[i].message)%16);
-						break;
-
-				}
-
+				unsigned char midiMsg[3];
+				midiMsg[0] = Pm_MessageStatus(midiBuffer[i].message);
+				midiMsg[1] = Pm_MessageData1(midiBuffer[i].message);
+				midiMsg[2] = Pm_MessageData2(midiBuffer[i].message);
+				midi_handleEvent(midiMsg);
 			}
 		}
 	}
