@@ -252,8 +252,8 @@ void List::select(int index, bool updateScroll, bool hold)
 	
 	if (multiple && (keyboard.ctrl || hold))
 	{
-		selecteds[value]=!selecteds[value];
-
+		if (value >= 0) // Note(jpc): fix crash when list empty
+			selecteds[value]=!selecteds[value];
 	}
 
 	if (!keyboard.shift && !keyboard.ctrl && !hold || !multiple)
@@ -263,7 +263,8 @@ void List::select(int index, bool updateScroll, bool hold)
 			if (i!=value)
 				selecteds[i]=false;
 		}
-		selecteds[value]=true;
+		if (value >= 0) // Note(jpc): fix crash when list empty
+			selecteds[value]=true;
 	}
 
 	if (updateScroll)
@@ -377,10 +378,12 @@ void List::updateView()
 
 	if (count == 0 && !multiple)
 	{
-		selecteds[value]=true;
-		selecteds_s.push_back(RectangleShape(Vector2f(width, 17)));
-		selecteds_s[selecteds_s.size()-1].setPosition(x, y + (value - scroll) * 17);
-		selecteds_s[selecteds_s.size()-1].setFillColor(colors[LISTITEMBGFOCUS]);
+		if (value >= 0) { // Note(jpc): fix crash when list empty
+			selecteds[value]=true;
+			selecteds_s.push_back(RectangleShape(Vector2f(width, 17)));
+			selecteds_s[selecteds_s.size()-1].setPosition(x, y + (value - scroll) * 17);
+			selecteds_s[selecteds_s.size()-1].setFillColor(colors[LISTITEMBGFOCUS]);
+		}
 	}
 		
 	for (int i = 0; i < text.size(); i++)

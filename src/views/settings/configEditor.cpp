@@ -428,7 +428,8 @@ void ConfigEditor::update()
 	previewReverb.update();
 	if (languageList.clicked())
 	{
-		lang_load(string("lang/"+languageFilenames[languageList.value]).c_str());
+		if (languageList.value >= 0)
+			lang_load(string("lang/"+languageFilenames[languageList.value]).c_str());
 	}
 
 	diviseur.update();
