@@ -1,7 +1,7 @@
 #ifndef NOTEPREVIEW_H
 #define NOTEPREVIEW_H
 #include "../gui/gui.hpp"
-#include "../libs/portmidi/portmidi.h"
+#include <portmidi.h>
 
 
 void previewNote(int instrument, int id, int volume, int isFromMidi);

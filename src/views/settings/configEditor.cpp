@@ -1,12 +1,12 @@
 #include "configEditor.hpp"
 #include "../../input/noteInput.hpp"
 #include "../pattern/songEditor.hpp"
-#include "../../libs/portmidi/portmidi.h"
 #include "../../midi/midi.h"
 #include "../pattern/songFileActions.hpp"
 #include "../../gui/sidebar.hpp"
 #include "../../gui/drawBatcher.hpp"
 #include "../../lang.h"
+#include <portmidi.h>
 
 extern List *instrList;
 

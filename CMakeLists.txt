@@ -23,7 +23,70 @@ endif()
 include_directories(src)
 
 # Add source files
-file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
+set(SOURCES
+	"src/fmengine/fmlib.c"
+	"src/fmengine/lz4/lz4.c"
+	"src/fmengine/lz4/lz4hc.c"
+	"src/globalFunctions.cpp"
+	"src/gui/button/button.cpp"
+	"src/gui/button/buttonlist.cpp"
+	"src/gui/channelHead.cpp"
+	"src/gui/checkbox/checkbox.cpp"
+	"src/gui/contextmenu/contextmenu.cpp"
+	"src/gui/drawBatcher.cpp"
+	"src/gui/gui.cpp"
+	"src/gui/list/list.cpp"
+	"src/gui/mainmenu.cpp"
+	"src/gui/operator/operator.cpp"
+	"src/gui/operator/operatorparams.cpp"
+	"src/gui/popup/popup_build.cpp"
+	"src/gui/popup/popup_close.cpp"
+	"src/gui/popup/popup.cpp"
+	"src/gui/popup/popup_effectInfos.cpp"
+	"src/gui/scrollbar/scrollbar.cpp"
+	"src/gui/sidebar.cpp"
+	"src/gui/slider/dataslider.cpp"
+	"src/gui/textfield/textfield.cpp"
+	"src/gui/vumeter/stereovumeter.cpp"
+	"src/gui/vumeter/vumeter.cpp"
+	"src/input/input.cpp"
+	"src/input/noteInput.cpp"
+	"src/lang.cpp"
+	"src/libs/simpleini/ConvertUTF.c"
+	"src/libs/tinyfiledialogs/tinyfiledialogs.c"
+	"src/main.cpp"
+	"src/midi/midi_export.cpp"
+	"src/midi/midi_import.cpp"
+	"src/midi/midiInstrNames.cpp"
+	"src/midi/midi_realtime.cpp"
+	"src/streamed/streamedExport.cpp"
+	"src/views/general/generalEditor.cpp"
+	"src/views/instrument/algoPresets.cpp"
+	"src/views/instrument/instrEditor_algorithms.cpp"
+	"src/views/instrument/instrEditor.cpp"
+	"src/views/instrument/instrEditor_fileActions.cpp"
+	"src/views/instrument/instrEditor_fmSync.cpp"
+	"src/views/instrument/instrEditor_global.cpp"
+	"src/views/instrument/instrEditor_history.cpp"
+	"src/views/pattern/patternSelection.cpp"
+	"src/views/pattern/songEditor_channelHeads.cpp"
+	"src/views/pattern/songEditor_contextMenu.cpp"
+	"src/views/pattern/songEditor.cpp"
+	"src/views/pattern/songEditor_history.cpp"
+	"src/views/pattern/songEditor_mouseEvents.cpp"
+	"src/views/pattern/songEditor_patternEdit.cpp"
+	"src/views/pattern/songEditor_patternList.cpp"
+	"src/views/pattern/songEditor_search.cpp"
+	"src/views/pattern/songEditor_shortcuts.cpp"
+	"src/views/pattern/songEditor_updateDisplay.cpp"
+	"src/views/pattern/songFileActions.cpp"
+	"src/views/pianoroll/pianoRoll_contextMenu.cpp"
+	"src/views/pianoroll/pianoRoll.cpp"
+	"src/views/pianoroll/pianoRoll_draw.cpp"
+	"src/views/settings/configEditor.cpp"
+	"src/views/settings/configEditor_keyboard.cpp"
+	"src/views/settings/configEditor_recentSongs.cpp"
+	"src/views/settings/configEditor_soundDevice.cpp")
 
 # Set executable output path
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
@@ -72,6 +135,22 @@ if(PORTAUDIO_FOUND)
 	include_directories(${PORTAUDIO_INCLUDE_DIRS})
 	target_link_libraries(${EXECUTABLE_NAME} ${PORTAUDIO_LIBRARIES})
 endif()
+
+# Detect and add PortMidi
+find_library(PORTMIDI_LIBRARY "portmidi")
+if(NOT PORTMIDI_LIBRARY)
+	message(FATAL_ERROR "Cannot find the PortMidi library")
+else()
+	message(STATUS "PortMidi library: ${PORTMIDI_LIBRARY}")
+endif()
+find_path(PORTMIDI_INCLUDE_DIR "portmidi.h")
+if(NOT PORTMIDI_INCLUDE_DIR)
+	message(FATAL_ERROR "Cannot find the PortMidi headers")
+else()
+	message(STATUS "PortMidi headers: ${PORTMIDI_INCLUDE_DIR}")
+endif()
+include_directories(${PORTMIDI_INCLUDE_DIR})
+target_link_libraries(${EXECUTABLE_NAME} ${PORTMIDI_LIBRARY})
 
 # Detect and add Lame
 find_library(LAME_LIBRARY "mp3lame")
