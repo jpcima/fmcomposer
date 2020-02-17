@@ -19,12 +19,12 @@ static void midi_handleEvent(const unsigned char midiMsg[3])
 	{
 	case 8: // note off
 		if (!midiPedal) {
-			if (midiMsg[1] % 16 < instrList->text.size())
+			if (midiMsg[0] % 16 < instrList->text.size())
 				previewNoteStop(midiMsg[1], 1,midiMsg[0]%16);
 		}
 		break;
 	case 9: // note on
-		if (midiMsg[1] % 16 < instrList->text.size())
+		if (midiMsg[0] % 16 < instrList->text.size())
 			previewNote(midiMsg[0]%16, midiMsg[1], midiMsg[2] / 1.282828, 1);
 		break;
 	case 0xB: // cc
@@ -71,7 +71,7 @@ static void midi_handleEvent(const unsigned char midiMsg[3])
 
 		break;
 	case 14: // Pitch Bend
-		if (midiMsg[1] % 16 < instrList->text.size())
+		if (midiMsg[0] % 16 < instrList->text.size())
 			previewNoteBend(fm, 2 * midiMsg[2] + (midiMsg[1] > 63), midiMsg[0]%16);
 		break;
 
