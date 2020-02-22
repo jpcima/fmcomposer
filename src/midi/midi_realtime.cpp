@@ -118,7 +118,7 @@ void midi_selectDevice(int id)
 		}
 		else
 		{
-			for (unsigned i = 0, n = midiStream->getPortCount() && !midiReady; i < n; ++i)
+			for (unsigned i = 0, n = midiStream->getPortCount(); i < n && !midiReady; ++i)
 			{
 				std::string name = midiStream->getPortName(i);
 				if (name == midiDeviceNames[id])
