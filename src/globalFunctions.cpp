@@ -412,6 +412,7 @@ void global_initialize()
 	}
 
 	midiReceiveEnable(1);
+	midi_selectDevice(0);
 
 	PaError err;
 

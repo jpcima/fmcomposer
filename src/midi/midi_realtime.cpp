@@ -11,7 +11,6 @@ static std::vector<unsigned char> midiBuffer;
 static vector<string> midiDeviceNames;
 static int midiReady, midiReceive, midiPedal;
 static const char midiClientName[] = "FMComposer";
-static const char midiVirtualPortName[] = "Virtual port";
 static RtMidi::Api midiApi = RtMidi::UNSPECIFIED;
 static const unsigned midiBufferSize = 8192;
 
@@ -102,37 +101,41 @@ void midi_selectDevice(int id)
 	midiStream = nullptr;
 	midiReady = 0;
 
-	if (id <= 0 || --id >= midiDeviceNames.size())
-		return;
-
 	try
 	{
 		midiStream = new RtMidiIn(midiApi, midiClientName, midiBufferSize);
 
 		midiApi = midiStream->getCurrentApi();
 
-		if (midiDeviceNames[id] == midiVirtualPortName)
+		if (id == 0)
 		{
 			midiStream->openVirtualPort();
 			midiReady = 1;
+			fprintf(stderr, "Opened virtual MIDI port\n");
+		}
+		else if (id < 0 || (id - 1) >= midiDeviceNames.size())
+		{
+			fprintf(stderr, "Invalid MIDI device ID: %d\n", id);
+			return;
 		}
 		else
 		{
+			const std::string &name = midiDeviceNames[id - 1];
+
 			for (unsigned i = 0, n = midiStream->getPortCount(); i < n && !midiReady; ++i)
 			{
-				std::string name = midiStream->getPortName(i);
-				if (name == midiDeviceNames[id])
+				if (midiStream->getPortName(i) == name)
 				{
 					midiStream->openPort(i);
 					midiReady = 1;
 				}
 			}
-		}
 
-		if (midiReady)
-			fprintf(stderr, "Opened MIDI In: %s\n", midiDeviceNames[id].c_str());
-		else
-			fprintf(stderr, "Cannot open MIDI In: %s\n", midiDeviceNames[id].c_str());
+			if (midiReady)
+				fprintf(stderr, "Opened MIDI In: %s\n", name.c_str());
+			else
+				fprintf(stderr, "Cannot open MIDI In: %s\n", name.c_str());
+		}
 	}
 	catch (RtMidiError &err)
 	{
@@ -150,8 +153,6 @@ vector<string>* midi_refreshDevices()
 			new RtMidiIn(midiApi, midiClientName, midiBufferSize)};
 
 		midiApi = midiTemp->getCurrentApi();
-
-		midiDeviceNames.push_back(midiVirtualPortName);
 
 		for (unsigned i = 0, n = midiTemp->getPortCount(); i < n; ++i)
 		{
