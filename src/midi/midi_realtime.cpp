@@ -1,20 +1,25 @@
 #include "midi.h"
 #include "../input/noteInput.hpp"
 #include "../views/instrument/instrEditor.hpp"
+#include <RtMidi.h>
+#include <memory>
 
-PmTimestamp midithru_time_proc(void *info);
 
-
-int selectedMidiDevice;
-PortMidiStream* midiStream;
-PmEvent midiBuffer[512];
-PmTimestamp current_timestamp;
-vector<int> midiDeviceIds;
-vector<string> midiDeviceNames;
-int midiReady, midiReceive, midiPedal;
+static int selectedMidiDevice;
+static RtMidiIn* midiStream;
+static std::vector<unsigned char> midiBuffer;
+static vector<string> midiDeviceNames;
+static int midiReady, midiReceive, midiPedal;
+static const char midiClientName[] = "FMComposer";
+static const char midiVirtualPortName[] = "Virtual port";
+static RtMidi::Api midiApi = RtMidi::UNSPECIFIED;
+static const unsigned midiBufferSize = 8192;
 
 static void midi_handleEvent(const unsigned char midiMsg[3])
 {
+	if (!midiReceive)
+		return;
+
 	switch (midiMsg[0] / 16)
 	{
 	case 8: // note off
@@ -80,63 +85,84 @@ static void midi_handleEvent(const unsigned char midiMsg[3])
 
 void midi_getEvents()
 {
-	if (midiReady && Pm_Poll(midiStream))
+	if (!midiReady)
+		return;
+
+	while (midiStream->getMessage(&midiBuffer), !midiBuffer.empty())
 	{
-		int count = Pm_Read(midiStream, midiBuffer, 512);
-		if (midiReceive)
-		{
-			for (int i = 0; i < count; i++)
-			{
-				unsigned char midiMsg[3];
-				midiMsg[0] = Pm_MessageStatus(midiBuffer[i].message);
-				midiMsg[1] = Pm_MessageData1(midiBuffer[i].message);
-				midiMsg[2] = Pm_MessageData2(midiBuffer[i].message);
-				midi_handleEvent(midiMsg);
-			}
-		}
+		if (midiBuffer.size() < 3)
+			midiBuffer.resize(3);
+		midi_handleEvent(midiBuffer.data());
 	}
 }
 
 void midi_selectDevice(int id)
 {
+	delete midiStream;
+	midiStream = nullptr;
+	midiReady = 0;
 
-	if (midiStream || id < 0)
+	if (id <= 0 || --id >= midiDeviceNames.size())
+		return;
+
+	try
 	{
-		Pm_Close(midiStream);
-		midiReady = 0;
+		midiStream = new RtMidiIn(midiApi, midiClientName, midiBufferSize);
+
+		midiApi = midiStream->getCurrentApi();
+
+		if (midiDeviceNames[id] == midiVirtualPortName)
+		{
+			midiStream->openVirtualPort();
+			midiReady = 1;
+		}
+		else
+		{
+			for (unsigned i = 0, n = midiStream->getPortCount() && !midiReady; i < n; ++i)
+			{
+				std::string name = midiStream->getPortName(i);
+				if (name == midiDeviceNames[id])
+				{
+					midiStream->openPort(i);
+					midiReady = 1;
+				}
+			}
+		}
+
+		if (midiReady)
+			fprintf(stderr, "Opened MIDI In: %s\n", midiDeviceNames[id].c_str());
+		else
+			fprintf(stderr, "Cannot open MIDI In: %s\n", midiDeviceNames[id].c_str());
 	}
-	if (id >= 0)
+	catch (RtMidiError &err)
 	{
-		Pm_OpenInput(&midiStream, id, 0, 32, 0, 0);
-		Pm_SetFilter(midiStream, PM_FILT_ACTIVE | PM_FILT_SYSEX | PM_FILT_CLOCK);
-		midiReady = 1;
+		fprintf(stderr, "%s\n", err.getMessage().c_str());
 	}
 }
 
 vector<string>* midi_refreshDevices()
 {
-	Pm_Terminate();
-	Pm_Initialize();
-	int nbdevices = Pm_CountDevices();
-
-	midiDeviceIds.clear();
 	midiDeviceNames.clear();
-	int nbInputDevices = 0;
-	for (int i = 0; i < nbdevices; i++)
-	{
-		const PmDeviceInfo *device = Pm_GetDeviceInfo(i);
 
-		//midi input devices
-		if (device->input)
+	try
+	{
+		std::unique_ptr<RtMidiIn> midiTemp{
+			new RtMidiIn(midiApi, midiClientName, midiBufferSize)};
+
+		midiApi = midiTemp->getCurrentApi();
+
+		midiDeviceNames.push_back(midiVirtualPortName);
+
+		for (unsigned i = 0, n = midiTemp->getPortCount(); i < n; ++i)
 		{
-			midiDeviceNames.push_back(device->name);
-			midiDeviceIds.push_back(i);
-			nbInputDevices++;
+			std::string name = midiTemp->getPortName(i);
+			if (!name.empty())
+				midiDeviceNames.push_back(name);
 		}
 	}
-	if (nbInputDevices == 1)
+	catch (RtMidiError &err)
 	{
-		midi_selectDevice(midiDeviceIds[0]);
+		fprintf(stderr, "%s\n", err.getMessage().c_str());
 	}
 
 	return &midiDeviceNames;

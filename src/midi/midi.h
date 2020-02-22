@@ -3,7 +3,6 @@
 
 #include "../fmengine/fmlib.h"
 #include "../views/settings/configEditor.hpp"
-#include <portmidi.h>
 #include <vector>
 using namespace std;
 

@@ -411,11 +411,6 @@ void global_initialize()
 		error(lang("globalFunctions", "FM_error"));
 	}
 
-	if (Pm_Initialize() != pmNoError)
-	{
-		error(lang("globalFunctions", "MIDI_error"));
-	}
-
 	midiReceiveEnable(1);
 
 	PaError err;
@@ -440,7 +435,6 @@ void global_exit()
 {
 	Pa_CloseStream(stream);
 	Pa_Terminate();
-	Pm_Terminate();
 
 	config->save();
 }
